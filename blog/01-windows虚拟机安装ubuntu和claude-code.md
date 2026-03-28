@@ -56,35 +56,64 @@ sudo apt update && sudo apt upgrade -y  # 更新软件包
 sudo apt install -y curl wget git vim build-essential  # 安装常用工具
 ```
 
-### 6. 安装 Node.js
+### 6. 安装 VSCode
+
+从 [VSCode 官网](https://code.visualstudio.com/) 下载 `.deb` 包，然后用 dpkg 安装：
+
+```bash
+sudo dpkg -i <下载的deb包路径>
+```
+
+### 7. 安装 Node.js
 
 ```bash
 curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -  # 添加 NodeSource 源
 sudo apt install -y nodejs   # 安装 Node.js
 ```
 
-### 7. 安装 Claude Code
+### 8. 安装 Claude Code
 
 ```bash
 sudo npm install -g @anthropic-ai/claude-code  # 全局安装 Claude Code
 claude                                     # 启动 Claude Code
 ```
 
-首次运行按提示登录 Anthropic 账号并输入 API Key。
+### 9. 配置 MiniMax M2.7 模型
 
-## 常用命令
+使用国产 MiniMax M2.7 模型，降低使用成本。
 
-| 命令 | 说明 |
-|------|------|
-| `claude` | 启动交互式对话 |
-| `claude -p "问题"` | 非交互式提问 |
-| `claude --help` | 查看帮助 |
-
-## 配置 Git（可选）
+#### 配置文件一：API 配置
 
 ```bash
-git config --global user.name "你的名字"      # 设置用户名
-git config --global user.email "你的邮箱"     # 设置邮箱
-ssh-keygen -t ed25519 -C "你的邮箱"           # 生成 SSH 密钥
-cat ~/.ssh/id_ed25519.pub  # 复制公钥到 GitHub SSH Keys
+nano ~/.claude/settings.json
 ```
+
+```json
+{
+  "env": {
+    "ANTHROPIC_BASE_URL": "https://api.minimaxi.com/anthropic",
+    "ANTHROPIC_AUTH_TOKEN": "你的MiniMax API Key",
+    "API_TIMEOUT_MS": "3000000",
+    "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": 1,
+    "ANTHROPIC_MODEL": "MiniMax-M2.7",
+    "ANTHROPIC_SMALL_FAST_MODEL": "MiniMax-M2.7",
+    "ANTHROPIC_DEFAULT_SONNET_MODEL": "MiniMax-M2.7",
+    "ANTHROPIC_DEFAULT_OPUS_MODEL": "MiniMax-M2.7",
+    "ANTHROPIC_DEFAULT_HAIKU_MODEL": "MiniMax-M2.7"
+  }
+}
+```
+
+#### 配置文件二：主配置
+
+```bash
+nano ~/.claude.json
+```
+
+```json
+{
+  "hasCompletedOnboarding": true
+}
+```
+
+从 [MiniMax 平台](https://platform.minimaxi.com/) 获取 API Key。
