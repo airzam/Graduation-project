@@ -47,6 +47,8 @@ C:\Users\67426\OneDrive\毕业设计\
 - 配置 MiniMax M2.7 模型
 - 推送代码至 GitHub
 - 工程移至 OneDrive
+- 精简博客内容，添加 VMware Tools、VSCode、MiniMax 配置
+- 创建 .gitignore，初始化 Git 仓库
 
 ## Git 仓库
 
