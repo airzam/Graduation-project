@@ -17,6 +17,7 @@
 - AI 模型：MiniMax M2.7
 - 构建平台：Linux（VMware 虚拟机 + Ubuntu）
 - 交叉编译器：gcc-aarch64-linux-gnu
+- 网络代理：`http://192.168.186.1:7897`（主机 Clash 局域网连接）
 
 ## Git 仓库
 
@@ -105,6 +106,13 @@ git remote add origin git@github.com:airzam/Graduation-project.git
 - 新增博客 `02-git多用户协作与SSH配置.md`
   - 第一部分：SSH key 配置、多 AI 协作分工
   - 第二部分（新增）：Git 常用命令详解（12 个分类）、分支策略、冲突处理、提交规范
+
+### 2026-03-31（Linux AI）
+
+- 配置 VMware 虚拟机代理上网
+  - 主机代理地址：`192.168.186.1:7897`（Clash 局域网模式）
+  - 代理写入 `~/.bashrc`，新终端自动生效
+  - NAT 模式下主机代理不能用 `127.0.0.1`，要用 VMware NAT 网关 IP `192.168.186.1`
 
 ---
 
