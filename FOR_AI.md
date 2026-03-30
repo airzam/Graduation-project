@@ -175,3 +175,13 @@ git remote add origin git@github.com:airzam/Graduation-project.git
 2. 遇到 README.md 先确认来源（上游 vs 用户自己的）
 3. 大文件由 Git LFS 管理，正常 git add/commit/push 即可
 4. 每次对话结束后更新对话记录
+
+---
+
+## 硬件使用经验
+
+### 树莓派 5 USB 问题
+
+- **现象**：上电前接了键盘和屏幕的供电，键盘无法使用；不接屏幕供电时键盘正常
+- **原因**：可能是电源功率不足，屏幕和键盘争抢供电
+- **建议**：使用独立电源供电（5V 3A 以上），或先只接键盘再根据需要接屏幕
