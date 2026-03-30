@@ -123,8 +123,9 @@ git remote add origin git@github.com:airzam/Graduation-project.git
 - 配置 Git LFS 管理大文件（.docx/.xlsx/.zip/.fd 等）
 - 更新 .gitignore 和同步规则说明
 - 告知 Windows AI：提交大文件前需运行 `git lfs install`
-- UEFI 源码已 fork 到 GitHub：https://github.com/airzam/rpi5-uefi
-  - 手动修复 subhook（Gitee 镜像）：`git clone https://gitee.com/fanxingkong/subhook.git subhook`
+- UEFI 源码（rpi5-uefi/）已纳入主仓库，作为普通文件夹管理
+  - 删除了所有嵌套 .git，保留完整编译环境
+  - 仓库总体积约 1.5GB
 
 ---
 
@@ -139,8 +140,7 @@ git remote add origin git@github.com:airzam/Graduation-project.git
 │   ├── 01-*.md            # 博客文章
 │   ├── 02-*.md            # 博客文章
 │   └── 03-*.md            # 博客文章
-├── rpi5-uefi/              # UEFI 固件源码（fork 自 worproject/rpi5-uefi）
-│   └── GitHub：https://github.com/airzam/rpi5-uefi
+├── rpi5-uefi/              # UEFI 固件源码（完整纳入）
 ├── rpi5-uefi-master.zip   # UEFI 源码压缩包（本地备份）
 ├── RPi5_UEFI_Release_v0.3/ # 编译好的固件（本地）
 ├── UEFI/                   # UEFI 相关代码
