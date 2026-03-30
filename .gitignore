@@ -17,3 +17,7 @@ Thumbs.db
 # 忽略临时文件
 *.tmp
 *.log
+
+# 忽略上游 UEFI 源码（应作为独立仓库克隆，不进 git）
+rpi5-uefi/
+rpi5-uefi-master/

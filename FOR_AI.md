@@ -114,6 +114,12 @@ git remote add origin git@github.com:airzam/Graduation-project.git
   - 主机代理地址：`192.168.186.1:7897`（Clash 局域网模式）
   - 代理写入 `~/.bashrc`，新终端自动生效
   - NAT 模式下主机代理不能用 `127.0.0.1`，要用 VMware NAT 网关 IP `192.168.186.1`
+- 克隆 worproject/rpi5-uefi 源码到项目目录
+- 安装编译依赖：gcc-aarch64-linux-gnu、iasl、python3-pyelfutils、uuid-dev 等
+- 修复子模块缺失问题（Brotli、MipiSysT、MbedTLS、Cmocka 等）
+- 编译成功，生成 `RPI_EFI.fd`（2MB）和 `config.txt`
+- SD 卡分区（FAT32）并烧录固件
+- 新增博客 `03-编译rpi5-uefi并烧录SD卡.md`
 
 ---
 
@@ -126,7 +132,8 @@ git remote add origin git@github.com:airzam/Graduation-project.git
 ├── blog/                   # 技术博客
 │   ├── README.md          # 博客写作规范
 │   ├── 01-*.md            # 博客文章
-│   └── 02-*.md            # 博客文章
+│   ├── 02-*.md            # 博客文章
+│   └── 03-*.md            # 博客文章
 ├── rpi5-uefi/              # UEFI 固件源码（worproject/rpi5-uefi）
 ├── rpi5-uefi-master.zip   # UEFI 源码压缩包（本地备份）
 ├── RPi5_UEFI_Release_v0.3/ # 编译好的固件（本地）
