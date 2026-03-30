@@ -102,6 +102,7 @@ git remote add origin git@github.com:airzam/Graduation-project.git
 - 生成 SSH key（ed25519），提供公钥供用户添加到 GitHub
 - 配置 git 用户信息（airzam）
 - 切换 remote 为 SSH 方式并成功推送到 GitHub
+- 新增博客 `02-git多用户协作与SSH配置.md`，记录 SSH key 配置、多 AI 协作分工等内容
 
 ---
 
