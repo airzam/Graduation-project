@@ -18,6 +18,7 @@
 - 构建平台：Linux（VMware 虚拟机 + Ubuntu）
 - 交叉编译器：gcc-aarch64-linux-gnu
 - 网络代理：`http://192.168.186.1:7897`（主机 Clash 局域网连接）
+- **sudo 密码**：`123456`（已配置，无需每次询问）
 
 ## Git 仓库
 
@@ -124,7 +125,9 @@ git remote add origin git@github.com:airzam/Graduation-project.git
 ├── README.md               # 项目总览
 ├── blog/                   # 技术博客
 │   ├── README.md          # 博客写作规范
-│   └── 01-*.md            # 博客文章
+│   ├── 01-*.md            # 博客文章
+│   └── 02-*.md            # 博客文章
+├── rpi5-uefi/              # UEFI 固件源码（worproject/rpi5-uefi）
 ├── rpi5-uefi-master.zip   # UEFI 源码压缩包（本地备份）
 ├── RPi5_UEFI_Release_v0.3/ # 编译好的固件（本地）
 ├── UEFI/                   # UEFI 相关代码
