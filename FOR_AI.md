@@ -26,6 +26,34 @@ git remote add origin git@github.com:airzam/Graduation-project.git
 
 ---
 
+## 🤖 AI 协作分工
+
+本项目由两个 AI 协作维护：
+
+| 职责 | AI 端 |
+|------|-------|
+| 代码更新、版本管理、git 推送 | **Linux AI（本 AI）** |
+| 大文件修改（Word、Excel 等） | **Windows AI** |
+
+### 协作规则
+
+1. **Linux AI（我）**
+   - 负责代码开发、调试、版本管理
+   - 通过 git 推送更新到 GitHub
+   - 保持代码仓库整洁，大文件不上传
+   - 每次对话结束后更新 FOR_AI.md 并提交
+
+2. **Windows AI**
+   - 负责 Word 文档、Excel 等大文件修改
+   - 在 Windows 本地工作，不涉及 git
+
+3. **同步机制**
+   - 代码相关：Linux AI 通过 git 管理
+   - 大文件：Windows AI 在本地修改，完成后告知 Linux AI 同步状态
+   - 每次对话结束后，双方都应更新 FOR_AI.md 的对话记录
+
+---
+
 ## ⚠️ AI 犯过的错误记录
 
 ### 2026-03-30
@@ -65,6 +93,12 @@ git remote add origin git@github.com:airzam/Graduation-project.git
 - 创建 `毕业设计/FOR_AI.md`（项目主说明）
 - 封存 `rpi5-uefi-master/` 为 `rpi5-uefi-master.zip`（本地上传，不进 git）
 - 重写本文件为 AI 操作历史记录
+
+### 2026-03-30（Linux AI）
+
+- 克隆项目到 ~/Graduation-project
+- 添加 AI 协作分工说明（Linux AI vs Windows AI）
+- 明确分工：Linux AI 负责代码和 git，Windows AI 负责大文件
 
 ---
 
