@@ -25,7 +25,12 @@ git submodule update --init --recursive 子模块路径
 - `MdePkg/Library/MipiSysTLib/mipisyst`
 - `UnitTestFrameworkPkg/Library/CmockaLib/cmocka`
 
-注：`subhook` 子模块仓库已不存在（404），但该模块仅用于单元测试，不影响固件编译。
+注：`subhook` 子模块仓库已不存在（404），但该模块仅用于单元测试，不影响固件编译。可通过 Gitee 镜像解决：
+
+```bash
+cd rpi5-uefi/edk2/UnitTestFrameworkPkg/Library/SubhookLib
+git clone https://gitee.com/fanxingkong/subhook.git subhook
+```
 
 ## 二、安装编译依赖
 
