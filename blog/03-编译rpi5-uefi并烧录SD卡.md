@@ -153,7 +153,41 @@ sudo umount /mnt/sdcard
 - 配置 SSH key 或 HTTPS 代理
 - 或手动克隆缺失的子模块
 
-### 6.2 编译缺少依赖
+```bash
+# 修复单个子模块
+cd rpi5-uefi/edk2
+git submodule update --init 子模块路径
+```
+
+常见需要修复的子模块：
+- `BaseTools/Source/C/BrotliCompress/brotli`
+- `CryptoPkg/Library/MbedTlsLib/mbedtls`
+- `MdePkg/Library/MipiSysTLib/mipisyst`
+- `UnitTestFrameworkPkg/Library/CmockaLib/cmocka`
+
+### 6.2 python 命令不存在
+
+错误：`/bin/sh: 1: python: not found`
+
+解决：创建 python3 的符号链接
+
+```bash
+sudo ln -sf /usr/bin/python3 /usr/bin/python
+```
+
+### 6.3 VMware 虚拟机未检测到 SD 卡
+
+问题：SD 卡插入后 `lsblk` 看不到设备
+
+解决：需要在 VMware 中手动连接设备
+
+```
+VMware 菜单 → VM → Removable Devices → [你的SD卡] → Connect
+```
+
+连接后再执行 `lsblk` 即可看到 `/dev/sdb`
+
+### 6.4 编译缺少依赖
 
 错误：`xxx.h: No such file or directory`
 
@@ -162,13 +196,13 @@ sudo umount /mnt/sdcard
 sudo apt install gcc-aarch64-linux-gnu iasl python3-pyelftools uuid-dev
 ```
 
-### 6.3 SD 卡无法挂载
+### 6.5 SD 卡无法挂载
 
 检查：
 - SD 卡是否已连接（VMware 中 VM → Removable Devices → Connect）
 - 分区表是否正确（`sudo fdisk -l /dev/sdb`）
 
-### 6.4 编译后找不到 .fd 文件
+### 6.6 编译后找不到 .fd 文件
 
 确认编译成功（exit code 0），文件位于：
 ```bash
