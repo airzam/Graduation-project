@@ -99,6 +99,9 @@ git remote add origin git@github.com:airzam/Graduation-project.git
 - 克隆项目到 ~/Graduation-project
 - 添加 AI 协作分工说明（Linux AI vs Windows AI）
 - 明确分工：Linux AI 负责代码和 git，Windows AI 负责大文件
+- 生成 SSH key（ed25519），提供公钥供用户添加到 GitHub
+- 配置 git 用户信息（airzam）
+- 切换 remote 为 SSH 方式并成功推送到 GitHub
 
 ---
 
