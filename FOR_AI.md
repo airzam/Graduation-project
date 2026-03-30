@@ -120,6 +120,9 @@ git remote add origin git@github.com:airzam/Graduation-project.git
 - 编译成功，生成 `RPI_EFI.fd`（2MB）和 `config.txt`
 - SD 卡分区（FAT32）并烧录固件
 - 新增博客 `03-编译rpi5-uefi并烧录SD卡.md`
+- 配置 Git LFS 管理大文件（.docx/.xlsx/.zip/.fd 等）
+- 更新 .gitignore 和同步规则说明
+- 告知 Windows AI：提交大文件前需运行 `git lfs install`
 
 ---
 
@@ -145,8 +148,21 @@ git remote add origin git@github.com:airzam/Graduation-project.git
 
 | 文件类型 | 同步方式 |
 |---------|---------|
-| 代码、.md | GitHub |
-| Word、Excel、固件 | Windows 本地 |
+| 代码、.md | GitHub（git 追踪） |
+| Word、Excel、固件 | GitHub（**Git LFS** 追踪） |
+| 大型二进制文件 | GitHub（**Git LFS** 追踪） |
+
+### Git LFS 配置
+
+已配置 Git LFS 追踪以下文件类型：
+- `*.docx` `*.xlsx` `*.xls` `*.doc`（Office 文档）
+- `*.zip` `*.rar`（压缩包）
+- `*.fd` `*.efi`（固件文件）
+
+**Windows AI 注意事项**：
+- 提交大文件时需要安装 Git LFS：`git lfs install`
+- 首次 push 时会触发 LFS 上传
+- 不需要手动运行 `git lfs push`，正常 `git add` + `git commit` + `git push` 即可
 
 ---
 
@@ -154,5 +170,5 @@ git remote add origin git@github.com:airzam/Graduation-project.git
 
 1. 工程在桌面，不在 OneDrive
 2. 遇到 README.md 先确认来源（上游 vs 用户自己的）
-3. 大文件（docx/xlsx/固件）不放 GitHub
+3. 大文件由 Git LFS 管理，正常 git add/commit/push 即可
 4. 每次对话结束后更新对话记录
