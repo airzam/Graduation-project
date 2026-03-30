@@ -1,18 +1,6 @@
-# 忽略大文件（不同步到 GitHub）
-*.docx
-*.doc
-*.xlsx
-*.xls
-*.rar
-*.zip
-
 # 忽略系统文件
 .DS_Store
 Thumbs.db
-
-# 忽略编译输出
-*.efi
-*.fd
 
 # 忽略临时文件
 *.tmp
@@ -21,3 +9,6 @@ Thumbs.db
 # 忽略上游 UEFI 源码（应作为独立仓库克隆，不进 git）
 rpi5-uefi/
 rpi5-uefi-master/
+
+# 大文件（.docx/.xlsx/.zip 等）由 Git LFS 管理
+# 详见 .gitattributes
