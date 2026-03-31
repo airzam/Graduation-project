@@ -8,3 +8,8 @@ Thumbs.db
 
 # 大文件（.docx/.xlsx/.zip 等）由 Git LFS 管理
 # 详见 .gitattributes
+
+# 超大文件（超过 GitHub 100MB 限制）
+*.pdf
+rpi5-uefi-master.zip
+UEFI编程实践_.pdf
