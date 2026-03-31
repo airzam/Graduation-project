@@ -209,6 +209,24 @@ sudo apt install gcc-aarch64-linux-gnu iasl python3-pyelftools uuid-dev
 ls -lh rpi5-uefi/RPI_EFI.fd
 ```
 
+### 6.7 添加鼠标驱动
+
+UEFI 默认没有集成 USB 鼠标驱动，需要手动添加。
+
+修改 `Platform/RaspberryPi/RPi5/RPi5.dsc`，在 USB 相关驱动部分添加：
+
+```
+MdeModulePkg/Bus/Usb/UsbMouseDxe/UsbMouseDxe.inf
+```
+
+修改 `Platform/RaspberryPi/RPi5/RPi5.fdf`，在 `FVMAIN` 组件部分添加：
+
+```
+INF MdeModulePkg/Bus/Usb/UsbMouseDxe/UsbMouseDxe.inf
+```
+
+重新编译即可。鼠标驱动会在 UEFI Shell 或固件设置界面中自动生效。
+
 ## 七、延伸
 
 - [worproject/rpi5-uefi GitHub](https://github.com/worproject/rpi5-uefi)

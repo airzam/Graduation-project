@@ -131,6 +131,18 @@ git remote add origin git@github.com:airzam/Graduation-project.git
 ### 2026-03-31（AI-A WSL）
 
 - 配置 VMware 虚拟机代理上网
+- 克隆 worproject/rpi5-uefi 源码
+- 安装编译依赖并修复子模块
+- 编译成功，生成 RPI_EFI.fd
+- SD 卡烧录固件
+
+### 2026-04-01（Linux AI）
+
+- **添加 USB 鼠标驱动（UsbMouseDxe）**
+  - 修改 `Platform/RaspberryPi/RPi5/RPi5.dsc`
+  - 修改 `Platform/RaspberryPi/RPi5/RPi5.fdf`
+  - 重新编译固件，替换 SD 卡
+- 更新第三篇博客，添加鼠标驱动说明
   - 主机代理地址：`192.168.186.1:7897`（Clash 局域网模式）
   - 代理写入 `~/.bashrc`，新终端自动生效
   - NAT 模式下主机代理不能用 `127.0.0.1`，要用 VMware NAT 网关 IP `192.168.186.1`
