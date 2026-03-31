@@ -30,28 +30,30 @@ git remote add origin git@github.com:airzam/Graduation-project.git
 
 ## 🤖 AI 协作分工
 
-本项目由两个 AI 协作维护：
+本项目由两个 AI 协作维护，**最明显的区别是运行环境不同**：
 
-| 职责 | AI 端 |
-|------|-------|
-| 代码更新、版本管理、git 推送 | **Linux AI（本 AI）** |
-| 大文件修改（Word、Excel 等） | **Windows AI** |
+| 运行环境 | AI 端 | 职责 |
+|---------|-------|------|
+| **WSL**（当前会话） | **AI-A（WSL）** | 代码开发、调试、版本管理、git 推送 |
+| **Windows** | **AI-B（Windows）** | Word、Excel 等大文件修改 |
 
 ### 协作规则
 
-1. **Linux AI（我）**
+1. **AI-A（WSL）**
+   - 在 WSL/Linux 环境（`/mnt/c/Users/67426/Desktop/毕业设计/`）工作
    - 负责代码开发、调试、版本管理
    - 通过 git 推送更新到 GitHub
-   - 保持代码仓库整洁，大文件不上传
+   - 保持代码仓库整洁，大文件由 Git LFS 管理
    - 每次对话结束后更新 FOR_AI.md 并提交
 
-2. **Windows AI**
+2. **AI-B（Windows）**
+   - 在 Windows 环境工作
    - 负责 Word 文档、Excel 等大文件修改
-   - 在 Windows 本地工作，不涉及 git
+   - 修改完成后告知 AI-A 同步状态
 
 3. **同步机制**
-   - 代码相关：Linux AI 通过 git 管理
-   - 大文件：Windows AI 在本地修改，完成后告知 Linux AI 同步状态
+   - 代码相关：AI-A 通过 git 管理
+   - 大文件：AI-B 在本地修改，完成后告知 AI-A 同步状态
    - 每次对话结束后，双方都应更新 FOR_AI.md 的对话记录
 
 ---
@@ -70,6 +72,24 @@ git remote add origin git@github.com:airzam/Graduation-project.git
    - 错误：以为工程在 OneDrive
    - 实际情况：已移动到桌面 `C:\Users\67426\Desktop\毕业设计\`
    - **教训**：每次操作前确认工程实际路径
+
+### 2026-03-31（AI-A WSL）
+
+1. **git reset --hard 导致文件丢失**
+   - 错误：执行 `git reset --hard origin/main` 后，本地 staged（未 commit）的文件从 git 索引和本地文件系统同时被删除
+   - 损失：论文文档（开题报告、文献综述、任务书、选题汇总表）、API KEY.txt、github令牌.txt 等
+   - 恢复：用户从 Windows 回收站/备份手动恢复了文件
+   - **教训**：
+     - `git reset --hard` 会同时删除 git 索引和本地文件，危险！
+     - 未 commit 的文件不受 git 保护，丢失无法通过 git 恢复
+     - commit 前务必确认暂存区内容，或使用 `git stash` 而非 `git reset`
+   - **预防**：对于未 commit 的重要文件，先备份再操作
+
+2. **推送包含超大文件和密钥**
+   - 错误：尝试推送超过 GitHub 100MB 限制的文件（rpi5-uefi-master.zip 105MB、UEFI编程实践_.pdf 54MB）
+   - 错误：推送了 github令牌.txt（触发 GitHub secret scanning）
+   - 纠正：从 git 历史中移除这些文件，更新 .gitignore 排除 *.pdf 和超大 zip
+   - **教训**：提交前检查文件大小，超大文件（>50MB）不应进 git
 
 ---
 
@@ -96,11 +116,11 @@ git remote add origin git@github.com:airzam/Graduation-project.git
 - 封存 `rpi5-uefi-master/` 为 `rpi5-uefi-master.zip`（本地上传，不进 git）
 - 重写本文件为 AI 操作历史记录
 
-### 2026-03-30（Linux AI）
+### 2026-03-30（AI-A WSL）
 
 - 克隆项目到 ~/Graduation-project
-- 添加 AI 协作分工说明（Linux AI vs Windows AI）
-- 明确分工：Linux AI 负责代码和 git，Windows AI 负责大文件
+- 添加 AI 协作分工说明（AI-A WSL vs AI-B Windows）
+- 明确分工：AI-A 负责代码和 git，AI-B 负责大文件
 - 生成 SSH key（ed25519），提供公钥供用户添加到 GitHub
 - 配置 git 用户信息（airzam）
 - 切换 remote 为 SSH 方式并成功推送到 GitHub
@@ -108,7 +128,7 @@ git remote add origin git@github.com:airzam/Graduation-project.git
   - 第一部分：SSH key 配置、多 AI 协作分工
   - 第二部分（新增）：Git 常用命令详解（12 个分类）、分支策略、冲突处理、提交规范
 
-### 2026-03-31（Linux AI）
+### 2026-03-31（AI-A WSL）
 
 - 配置 VMware 虚拟机代理上网
   - 主机代理地址：`192.168.186.1:7897`（Clash 局域网模式）
@@ -122,10 +142,11 @@ git remote add origin git@github.com:airzam/Graduation-project.git
 - 新增博客 `03-编译rpi5-uefi并烧录SD卡.md`
 - 配置 Git LFS 管理大文件（.docx/.xlsx/.zip/.fd 等）
 - 更新 .gitignore 和同步规则说明
-- 告知 Windows AI：提交大文件前需运行 `git lfs install`
-- UEFI 源码（rpi5-uefi/）已纳入主仓库，作为普通文件夹管理
-  - 删除了所有嵌套 .git，保留完整编译环境
-  - 仓库总体积约 1.5GB
+- **【错误】** 执行 `git reset --hard` 导致本地文件丢失
+  - 原因：未 commit 的 staged 文件被同时从 git 索引和本地文件系统删除
+  - 教训：重要文件先 commit 再操作；使用 `git stash` 而非 `git reset --hard`
+- 同步论文文档到 GitHub（用户恢复文件后）
+- 推送成功
 
 ---
 
@@ -141,7 +162,7 @@ git remote add origin git@github.com:airzam/Graduation-project.git
 │   ├── 02-*.md            # 博客文章
 │   └── 03-*.md            # 博客文章
 ├── rpi5-uefi/              # UEFI 固件源码（完整纳入）
-├── rpi5-uefi-master.zip   # UEFI 源码压缩包（本地备份）
+├── rpi5-uefi-master.zip   # UEFI 源码压缩包（本地备份，不进 git）
 ├── RPi5_UEFI_Release_v0.3/ # 编译好的固件（本地）
 ├── UEFI/                   # UEFI 相关代码
 └── *.docx / *.xlsx        # 论文文档
@@ -153,19 +174,15 @@ git remote add origin git@github.com:airzam/Graduation-project.git
 |---------|---------|
 | 代码、.md | GitHub（git 追踪） |
 | Word、Excel、固件 | GitHub（**Git LFS** 追踪） |
-| 大型二进制文件 | GitHub（**Git LFS** 追踪） |
+| 超大文件（*.pdf、>100MB） | **本地保留**，不进 git |
 
 ### Git LFS 配置
 
 已配置 Git LFS 追踪以下文件类型：
 - `*.docx` `*.xlsx` `*.xls` `*.doc`（Office 文档）
-- `*.zip` `*.rar`（压缩包）
 - `*.fd` `*.efi`（固件文件）
 
-**Windows AI 注意事项**：
-- 提交大文件时需要安装 Git LFS：`git lfs install`
-- 首次 push 时会触发 LFS 上传
-- 不需要手动运行 `git lfs push`，正常 `git add` + `git commit` + `git push` 即可
+**注意**：*.zip 和 *.rar 不由 Git LFS 追踪，超大文件本地保留即可。
 
 ---
 
@@ -173,8 +190,9 @@ git remote add origin git@github.com:airzam/Graduation-project.git
 
 1. 工程在桌面，不在 OneDrive
 2. 遇到 README.md 先确认来源（上游 vs 用户自己的）
-3. 大文件由 Git LFS 管理，正常 git add/commit/push 即可
-4. 每次对话结束后更新对话记录
+3. **重要**：`git reset --hard` 会同时删除 git 索引和本地文件，未 commit 的文件会丢失！
+4. 超大文件（*.pdf、>100MB）不进 git
+5. 每次对话结束后更新对话记录
 
 ---
 
