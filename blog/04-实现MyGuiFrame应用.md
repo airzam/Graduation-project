@@ -333,7 +333,160 @@ while (gST->ConIn->ReadKeyStroke(gST->ConIn, &Key) == EFI_NOT_READY) {
 
 ---
 
-## 九、参考
+## 九、常见问题汇总
+
+### 问题1：库依赖链缺失
+
+**现象**：编译报错 `error 4000: Instance of library class [XXX] is not found`
+
+```
+error 4000: Instance of library class [PrintLib] is not found
+error 4000: Instance of library class [PcdLib] is not found
+error 4000: Instance of library class [DebugLib] is not found
+...
+```
+
+**原因**：EDK2 的库依赖是自动解析的，但需要 DSC 中显式声明所有依赖的库。
+
+**解决**：在 `MyAppPkg.dsc` 的 `[LibraryClasses]` 中逐步添加缺失的库：
+
+```ini
+[LibraryClasses]
+  UefiApplicationEntryPoint|MdePkg/Library/UefiApplicationEntryPoint/UefiApplicationEntryPoint.inf
+  UefiLib|MdePkg/Library/UefiLib/UefiLib.inf
+  PrintLib|MdePkg/Library/BasePrintLib/BasePrintLib.inf
+  DebugLib|MdePkg/Library/BaseDebugLibNull/BaseDebugLibNull.inf
+  BaseMemoryLib|MdePkg/Library/BaseMemoryLib/BaseMemoryLib.inf
+  BaseLib|MdePkg/Library/BaseLib/BaseLib.inf
+  BasePcdLibNull|MdePkg/Library/BasePcdLibNull/BasePcdLibNull.inf
+  PcdLib|MdePkg/Library/BasePcdLibNull/BasePcdLibNull.inf
+  MemoryAllocationLib|MdePkg/Library/UefiMemoryAllocationLib/UefiMemoryAllocationLib.inf
+  UefiBootServicesTableLib|MdePkg/Library/UefiBootServicesTableLib/UefiBootServicesTableLib.inf
+  UefiRuntimeServicesTableLib|MdePkg/Library/UefiRuntimeServicesTableLib/UefiRuntimeServicesTableLib.inf
+  DevicePathLib|MdePkg/Library/UefiDevicePathLib/UefiDevicePathLib.inf
+  Aarch64MemLib|HelloWorldPkg/Library/Aarch64MemLib/Aarch64MemLib.inf
+  StackCheckLib|MdePkg/Library/StackCheckLib/StackCheckLib.inf
+  StackCheckFailureHookLib|MdePkg/Library/StackCheckFailureHookLibNull/StackCheckFailureHookLibNull.inf
+```
+
+---
+
+### 问题2：链接报错 `undefined reference to '__stack_chk_guard'`
+
+**现象**：
+```
+undefined reference to `__stack_chk_guard'
+undefined reference to `__stack_chk_fail'
+```
+
+**原因**：GCC 的栈保护功能需要 `__stack_chk_guard` 符号，但 EDK2 的 BasePrintLib 在某些配置下会触发栈保护，而 BaseTools 提供的库没有这个符号。
+
+**解决**：
+1. 添加 `StackCheckLib` 和 `StackCheckFailureHookLib`
+2. 在 INF 文件中添加库依赖
+
+---
+
+### 问题3：链接报错 `unsupported relocation`
+
+**现象**：
+```
+危险的重寻址: unsupported relocation
+recompiling with -fPIC
+```
+
+**原因**：GCC 的 `-fstack-protector`（栈保护）与 EDK2 的链接方式不兼容。
+
+**解决**：在 `MyAppPkg.dsc` 中添加：
+
+```ini
+[BuildOptions]
+  GCC:*_*_AARCH64_CC_FLAGS = -fno-builtin -fno-stack-protector
+```
+
+---
+
+### 问题4：`WaitKey()` 未定义
+
+**现象**：
+```
+error: implicit declaration of function 'WaitKey' [-Werror=implicit-function-declaration]
+```
+
+**原因**：`WaitKey()` 是 RobinPkg 自己定义的简化函数，不是标准 UEFI API。
+
+**解决**：使用标准的 `gST->ConIn->ReadKeyStroke()`：
+
+```c
+#include <Library/UefiBootServicesTableLib.h>
+
+gST->ConIn->Reset(gST->ConIn, FALSE);
+EFI_INPUT_KEY Key;
+while (gST->ConIn->ReadKeyStroke(gST->ConIn, &Key) == EFI_NOT_READY) {
+  gBS->WaitForEvent(1, &gST->ConIn->WaitForKey, 0);
+}
+```
+
+---
+
+### 问题5：`gST` 和 `gBS` 未声明
+
+**现象**：
+```
+error: 'gST' undeclared (first use in this function)
+error: 'gBS' undeclared (first use in this function)
+```
+
+**原因**：使用全局变量 `gST`（系统表）和 `gBS`（启动服务表）需要包含对应的头文件。
+
+**解决**：包含头文件：
+
+```c
+#include <Library/UefiBootServicesTableLib.h>
+```
+
+这样 `gST` 和 `gBS` 就自动可用了（EDK2 宏定义）。
+
+---
+
+### 问题6：编译报错 `no PLATFORM_VERSION`
+
+**现象**：
+```
+error 5000: No PLATFORM_VERSION
+```
+
+**解决**：在 DSC 文件的 `[Defines]` 部分添加：
+
+```ini
+[Defines]
+  PLATFORM_NAME                  = MyAppPkg
+  PLATFORM_VERSION               = 0.1
+  ...
+```
+
+---
+
+### 问题7：LTO 与 GCC 版本不兼容
+
+**现象**：
+```
+-Wno-lto-type-mismatch
+relocation R_AARCH64_ADR_PREL_PG_HI21 against symbol `__stack_chk_guard'
+```
+
+**原因**：GCC 13 对 LTO（链接时优化）的检查更严格，与旧版 EDK2 配置不完全兼容。
+
+**解决**：禁用栈保护 + 显式声明 LTO 选项：
+
+```ini
+[BuildOptions]
+  GCC:*_*_AARCH64_CC_FLAGS = -fno-builtin -fno-stack-protector
+```
+
+---
+
+## 十、参考
 
 - 上传 edk2：`~/edk2/RobinPkg/Applications/MyGuiFrame/`（完整 GUI 实现）
 - 官方 EDK2 文档：https://github.com/tianocore/tianocore.github.io/wiki/EDK-II
