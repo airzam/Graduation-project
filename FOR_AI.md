@@ -195,6 +195,14 @@ git remote add origin git@github.com:airzam/Graduation-project.git
   - 上传 edk2：参考（提取必要的包）
 - 推送所有更改到 GitHub
 
+### 2026-04-02 续（Linux AI）
+
+- **创建代码分析文档**
+  - 新建 `code-analysis/` 文件夹
+  - 创建 `01-MyGuiFrame详解.md`，按逻辑顺序解析 MyGuiFrame 实现
+  - 内容包括：程序入口、协议初始化、图形模式切换、Blt操作、GUI框架、事件循环
+  - 包含协议汇总表、全局变量表、关键代码片段、文件依赖关系
+
 ---
 
 ## 硬件使用经验
@@ -213,6 +221,8 @@ git remote add origin git@github.com:airzam/Graduation-project.git
 │   ├── 02-*.md            # 博客文章
 │   ├── 03-*.md            # 博客文章
 │   └── 04-*.md            # 博客文章
+├── code-analysis/          # 代码分析文档
+│   └── 01-MyGuiFrame详解.md
 ├── rpi5-uefi/              # UEFI 固件源码（完整纳入）
 ├── rpi5-uefi-master.zip   # UEFI 源码压缩包（本地备份，不进 git）
 ├── RPi5_UEFI_Release_v0.3/ # 编译好的固件（本地）
