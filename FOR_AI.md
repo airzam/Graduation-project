@@ -160,6 +160,45 @@ git remote add origin git@github.com:airzam/Graduation-project.git
 - 同步论文文档到 GitHub（用户恢复文件后）
 - 推送成功
 
+### 2026-04-01 晚（Linux AI）
+
+- **配置 VMware Ubuntu SSH 服务**
+  - 安装 openssh-server
+  - 启动 sshd 服务并设置开机自启
+  - IP 地址：192.168.186.135
+- 新增博客 `04-windows虚拟机配置SSH.md`
+
+### 2026-04-02（Linux AI）
+
+- **用户从 Windows 上传了 edk2 工程到 home 目录**
+- 对比两个 edk2：
+  - 毕设 edk2（worproject/rpi5-uefi）：RPi5 固件编译用
+  - 上传 edk2（tianocore/edk2）：UEFI 应用开发用（含 RobinPkg、StdLib、HelloWorldPkg）
+- **实现 MyGuiFrame 从零编译**
+  - 创建 `MyAppPkg` 包
+  - 从上传 edk2 复制 StdLib、HelloWorldPkg、StackCheckLib 到毕设 edk2
+  - 配置 `MyAppPkg.dsc` 和 `MyGuiFrame.inf`
+  - 编写 `MyGuiFrame.c`（Hello World 版）
+  - **修复 7 个编译问题**：
+    1. 库依赖链缺失 → 逐步添加所有依赖库
+    2. `__stack_chk_guard` 未定义 → 添加 StackCheckLib
+    3. `unsupported relocation` → 添加 `-fno-stack-protector`
+    4. `WaitKey()` 未定义 → 使用 `gST->ConIn->ReadKeyStroke()`
+    5. `gST`/`gBS` 未声明 → 包含 `UefiBootServicesTableLib.h`
+    6. `PLATFORM_VERSION` 缺失 → 在 DSC 添加版本定义
+    7. LTO 与 GCC 13 不兼容 → 禁用栈保护
+  - 成功编译 MyGuiFrame.efi (16KB)
+  - 复制到 SD 卡
+  - 新增博客 `04-实现MyGuiFrame应用.md`（含完整流程和问题汇总）
+- **双 edk2 分工方案确认**：
+  - 毕设 edk2：编译 RPi5 固件 + 自己写的 EFI 程序
+  - 上传 edk2：参考（提取必要的包）
+- 推送所有更改到 GitHub
+
+---
+
+## 硬件使用经验
+
 ---
 
 ## 目录结构
@@ -172,7 +211,8 @@ git remote add origin git@github.com:airzam/Graduation-project.git
 │   ├── README.md          # 博客写作规范
 │   ├── 01-*.md            # 博客文章
 │   ├── 02-*.md            # 博客文章
-│   └── 03-*.md            # 博客文章
+│   ├── 03-*.md            # 博客文章
+│   └── 04-*.md            # 博客文章
 ├── rpi5-uefi/              # UEFI 固件源码（完整纳入）
 ├── rpi5-uefi-master.zip   # UEFI 源码压缩包（本地备份，不进 git）
 ├── RPi5_UEFI_Release_v0.3/ # 编译好的固件（本地）
