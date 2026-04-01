@@ -183,7 +183,7 @@ EFI_STATUS EFIAPI UefiMain(
 
 ## 四、编译步骤
 
-### 4.1 配置 target.txt
+### 4.1 编译 EFI 程序 (MyGuiFrame)
 
 编辑 `edk2/Conf/target.txt`：
 
@@ -194,30 +194,67 @@ TARGET_ARCH          = AARCH64
 TOOL_CHAIN_TAG       = GCC5
 ```
 
-### 4.2 执行编译
+然后编译：
 
 ```bash
 cd ~/Graduation-project/rpi5-uefi/edk2
-
-# 设置交叉编译器前缀
 export GCC5_AARCH64_PREFIX=aarch64-linux-gnu-
-
-# 设置环境
 source edksetup.sh
-
-# 编译
-build -a AARCH64 -t GCC5 -b DEBUG -p MyAppPkg/MyAppPkg.dsc
+build
 ```
 
-### 4.3 编译产物
+### 4.2 编译 RPi5 固件
+
+恢复 `edk2/Conf/target.txt`：
+
+```ini
+ACTIVE_PLATFORM       = edk2-platforms/Platform/RaspberryPi/RPi5/RPi5.dsc
+TARGET               = RELEASE
+TARGET_ARCH          = AARCH64
+TOOL_CHAIN_TAG       = GCC5
+```
+
+然后编译固件：
+
+```bash
+cd ~/Graduation-project/rpi5-uefi
+./build.sh
+```
+
+### 4.3 命令行切换（无需修改 target.txt）
+
+使用 `-p` 参数指定平台，无需修改配置文件：
+
+```bash
+cd ~/Graduation-project/rpi5-uefi/edk2
+export GCC5_AARCH64_PREFIX=aarch64-linux-gnu-
+source edksetup.sh
+
+# 编译 MyGuiFrame
+build -a AARCH64 -t GCC5 -b DEBUG -p MyAppPkg/MyAppPkg.dsc
+
+# 编译 RPi5 固件（需在 rpi5-uefi 目录）
+cd ../..
+./build.sh
+```
+
+---
+
+## 五、编译产物
+
+### 5.1 EFI 程序
 
 ```
 edk2/Build/MyAppPkg/DEBUG_GCC5/AARCH64/MyGuiFrame.efi (16KB)
 ```
 
----
+### 5.2 RPi5 固件
 
-## 五、复制到 SD 卡并运行
+```
+rpi5-uefi/Build/RPi5/RELEASE_GCC/FV/RPI_EFI.fd
+```
+
+## 六、复制到 SD 卡并运行
 
 ### 5.1 挂载 SD 卡
 
@@ -246,7 +283,7 @@ fs0:\> MyGuiFrame.efi
 
 ---
 
-## 六、依赖关系图
+## 七、依赖关系图
 
 ```
 MyGuiFrame.efi
@@ -267,7 +304,7 @@ MyGuiFrame.efi
 
 ---
 
-## 七、常见问题
+## 八、常见问题
 
 ### Q1: 编译报错 "implicit declaration of function 'WaitKey'"
 
@@ -296,7 +333,7 @@ while (gST->ConIn->ReadKeyStroke(gST->ConIn, &Key) == EFI_NOT_READY) {
 
 ---
 
-## 八、参考
+## 九、参考
 
 - 上传 edk2：`~/edk2/RobinPkg/Applications/MyGuiFrame/`（完整 GUI 实现）
 - 官方 EDK2 文档：https://github.com/tianocore/tianocore.github.io/wiki/EDK-II
