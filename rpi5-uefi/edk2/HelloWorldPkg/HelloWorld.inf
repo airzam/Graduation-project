@@ -1,0 +1,22 @@
+[Defines]
+    INF_VERSION = 0x00010006
+    BASE_NAME = HelloWorld
+    FILE_GUID = 34db44f2-fafa-4e89-8b5b-46d92b1bd011
+    MODULE_TYPE = UEFI_APPLICATION
+    VERSION_STRING = 0.1
+    ENTRY_POINT = UefiMain
+
+[Sources]
+    HelloWorld.c
+
+[Packages]
+    MdePkg/MdePkg.dec
+    HelloWorldPkg/HelloWorldPkg.dec
+
+[LibraryClasses]
+    UefiApplicationEntryPoint
+    UefiLib
+    PrintLib
+    DebugLib
+    # 为AARCH64添加memcpy库
+    Aarch64MemLib

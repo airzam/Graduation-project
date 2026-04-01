@@ -1,0 +1,34 @@
+# HelloWorldPkg/Library/Aarch64MemLib/Aarch64MemLib.inf
+##
+# @file
+# AARCH64-specific memcpy implementation library.
+#
+# Copyright (c) 2026 Your Name. All rights reserved.
+# SPDX-License-Identifier: BSD-2-Clause-Patent
+##
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = Aarch64MemLib
+  MODULE_TYPE                    = BASE
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = Aarch64MemLib
+
+[Sources]
+  Aarch64MemLib.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+
+[LibraryClasses]
+  BaseMemoryLib
+  DebugLib
+
+[Protocols]
+
+[Guids]
+
+[Pcd]
+
+[BuildOptions]
+  # 确保这个库在所有配置中都可用
+  GCC:*_*_AARCH64_CC_FLAGS = -fno-builtin-memcpy
