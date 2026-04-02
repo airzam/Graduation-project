@@ -166,7 +166,7 @@ git remote add origin git@github.com:airzam/Graduation-project.git
   - 安装 openssh-server
   - 启动 sshd 服务并设置开机自启
   - IP 地址：192.168.186.135
-- 新增博客 `04-windows虚拟机配置SSH.md`
+- 新增博客 `06-windows虚拟机配置SSH.md`
 
 ### 2026-04-02（Linux AI）
 
@@ -279,7 +279,8 @@ git remote add origin git@github.com:airzam/Graduation-project.git
 │   ├── 02-*.md            # 博客文章
 │   ├── 03-*.md            # 博客文章
 │   ├── 04-*.md            # 博客文章
-│   └── 05-*.md            # 博客文章
+│   ├── 05-*.md            # 博客文章
+│   └── 06-*.md            # 博客文章
 ├── code-analysis/          # 代码分析文档
 │   └── 01-MyGuiFrame详解.md
 ├── rpi5-uefi/              # UEFI 固件源码
