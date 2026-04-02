@@ -261,6 +261,31 @@ git remote add origin git@github.com:airzam/Graduation-project.git
   - 添加：固件禁用 GPIO 串口的说明
   - 更新：硬件连接图和常见问题
 
+### 2026-04-03（Linux AI）
+
+- **毕业设计重点：安全启动模块**
+  - 用户确认需求：自己能改固件，别人改不了，但别人可能通过网络改 EFI 程序
+  - 这符合 LoJax/BadUSB 等真实攻击案例的防御场景
+  - **攻击链**：GitHub被篡改 → 下载恶意.efi → 复制到SD卡 → RPi启动执行恶意代码
+  - **防御方案**：启用 UEFI Secure Boot，签名验证 .efi
+- **分析了4种实现方案**：
+  - 方案 A：每个 EFI 应用自验签名（难度★★☆）
+  - 方案 B：独立验证器 + 白名单（难度★★☆）
+  - 方案 C：加密通信 + Hash 校验（难度★★★☆）
+  - 方案 D：公钥内嵌 + 应用自验（难度★★★★☆）
+  - **推荐**：直接启用 SECURE_BOOT_ENABLE = TRUE（标准 UEFI 方案）
+- **攻击演示设计**：
+  - SerialRecvMalicious.c（无害恶意版本）：显示警告、发送假数据、记录假日志
+  - 阶段1：无 Secure Boot → 攻击成功（显示假数据）
+  - 阶段2：启用 Secure Boot → 恶意版本被拦截（显示 Violation）
+- **保存计划文档**：`docs/PLAN-07-安全启动设计.md`
+- **待实现**：
+  - [ ] 修改 SECURE_BOOT_ENABLE = TRUE
+  - [ ] 创建 SerialRecvMalicious.c
+  - [ ] 实现 HostTools（GenKeys.py, SignTool.py）
+  - [ ] 完成博客 07
+  - [ ] 答辩演示
+
 ---
 
 ## 硬件使用经验
@@ -280,13 +305,18 @@ git remote add origin git@github.com:airzam/Graduation-project.git
 │   ├── 03-*.md            # 博客文章
 │   ├── 04-*.md            # 博客文章
 │   ├── 05-*.md            # 博客文章
-│   └── 06-*.md            # 博客文章
+│   ├── 06-*.md            # 博客文章
+│   └── 07-*.md            # 博客文章（安全启动，TODO）
+├── docs/                    # 设计文档
+│   └── PLAN-07-安全启动设计.md  # 安全启动毕设计划
 ├── code-analysis/          # 代码分析文档
 │   └── 01-MyGuiFrame详解.md
 ├── rpi5-uefi/              # UEFI 固件源码
 │   └── edk2/
 │       ├── MyAppPkg/       # 自己的应用包
-│       └── SerialPkg/      # 串口通信包（SerialRecv.efi 已编译成功）
+│       ├── SerialPkg/      # 串口通信包（SerialRecv.efi 已编译成功）
+│       │   └── SerialRecvMalicious/  # 恶意版本演示程序（安全演示用）
+│       └── HostTools/      # 密钥生成和签名工具
 ├── RPi5_UEFI_Release_v0.3/ # 编译好的固件（本地）
 └── *.docx / *.xlsx        # 论文文档
 ```
