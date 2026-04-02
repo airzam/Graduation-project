@@ -211,9 +211,21 @@ git remote add origin git@github.com:airzam/Graduation-project.git
 - **改用串口通信方案**
   - 创建 `SerialPkg` 包（串口通信功能预留）
   - 创建 `SerialRecv.c`（串口回环测试程序）
-  - **构建问题**：SerialPkg 构建在 "Processing meta-data" 阶段失败，原因待查
+  - **构建问题**：SerialPkg 构建在 "Processing meta-data" 阶段失败
   - 新增博客 `05-树莓派串口通信.md`
-  - 删除原 `05-树莓派网络启动配置.md`
+
+### 2026-04-02 续-2（Linux AI）
+
+- **修复 SerialPkg 构建问题**
+  - 问题：复制 MyAppPkg 后文件未正确重命名
+  - 解决：将 MyAppPkg.dec/dsc → SerialPkg.dec/dsc，MyGuiFrame.inf/c → SerialRecv.inf/c
+  - 更新所有 DEC/DSC/INF 文件内容中的包名和路径
+  - **SerialPkg.dsc 缺少 GCC5_AARCH64_PREFIX**：`export GCC5_AARCH64_PREFIX=aarch64-linux-gnu-`
+  - SerialRecv.efi (16KB) 编译成功
+- **SD 卡状态**
+  - SD 卡已断开连接（设备 /dev/sdc1 不存在）
+  - 用户需重新插卡后复制 SerialRecv.efi
+- 推送 SerialPkg 修复到 GitHub
 
 ---
 
@@ -239,7 +251,7 @@ git remote add origin git@github.com:airzam/Graduation-project.git
 ├── rpi5-uefi/              # UEFI 固件源码
 │   └── edk2/
 │       ├── MyAppPkg/       # 自己的应用包
-│       └── SerialPkg/      # 串口通信包（构建有问题，待修复）
+│       └── SerialPkg/      # 串口通信包（SerialRecv.efi 已编译成功）
 ├── RPi5_UEFI_Release_v0.3/ # 编译好的固件（本地）
 └── *.docx / *.xlsx        # 论文文档
 ```
