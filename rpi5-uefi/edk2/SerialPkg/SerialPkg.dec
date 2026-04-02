@@ -1,0 +1,11 @@
+## @file
+#  Serial Package - Serial Communication Package for UEFI
+#
+#  Copyright (c) 2026, airzam. All rights reserved.<BR>
+#
+
+[Defines]
+  DEC_SPECIFICATION              = 0x00010005
+  PACKAGE_NAME                   = SerialPkg
+  PACKAGE_GUID                   = 6b8e2e1c-4a3d-5f6e-9b7a-0c1d2e3f4a5b
+  PACKAGE_VERSION                = 0.1
