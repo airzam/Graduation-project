@@ -227,6 +227,20 @@ git remote add origin git@github.com:airzam/Graduation-project.git
   - 用户需重新插卡后复制 SerialRecv.efi
 - 推送 SerialPkg 修复到 GitHub
 
+### 2026-04-02 续-3（Linux AI）
+
+- **重大失误：串口代码用错了协议**
+  - 错误：SerialRecv.c 使用 `gST->ConIn->ReadKeyStroke()` 和 `gST->ConOut->OutputString()`
+  - 这是 **Console 协议**（键盘/屏幕），不是 GPIO 串口
+  - 后果：PC 发送数据到 GPIO → RPi 能收到并显示，但无法通过 GPIO 回传
+  - 原因：不懂 Console 协议 vs Serial I/O 协议的区别
+  - **教训**：UEFI 有两套输入输出系统
+    - Console 协议：键盘/HDMI（`gST->ConIn/ConOut`）
+    - Serial I/O 协议：GPIO 串口（需 `LocateProtocol` 获取）
+  - **修复**：重写 SerialRecv.c，使用 `EFI_SERIAL_IO_PROTOCOL` 的 `Read()`/`Write()`
+  - 自定义协议结构体（避免 gEfiSerialIoProtocolGuid 链接问题）
+  - SerialRecv.efi 重新编译成功
+
 ---
 
 ## 硬件使用经验
