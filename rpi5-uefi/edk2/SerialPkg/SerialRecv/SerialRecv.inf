@@ -19,4 +19,5 @@
   PrintLib
   DebugLib
   BaseMemoryLib
+  BaseLib
   Aarch64MemLib

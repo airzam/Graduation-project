@@ -241,6 +241,26 @@ git remote add origin git@github.com:airzam/Graduation-project.git
   - 自定义协议结构体（避免 gEfiSerialIoProtocolGuid 链接问题）
   - SerialRecv.efi 重新编译成功
 
+### 2026-04-02 续-4（Linux AI）
+
+- **GPIO 14/15 串口不工作：根本原因**
+  - 代码分析 `Rhpx.asl` 发现 GPIO 14/15 UART 复用被注释禁用
+  - 原因：DMA 冲突（"dmap conflict"）
+  - **RPi5 UEFI 固件不支持 GPIO 14/15 串口**
+- **RPi5 有独立的专用串口连接器**
+  - README.md 确认：UART 🟢 工作，PL011 在 dedicated connector
+  - 这是 3-pin 独立插针（非 40-pin GPIO），位置在板子其他区域
+  - 用户已找到该专用串口
+- **SerialRecv.v2 功能**
+  - 使用 Serial I/O 协议
+  - 枚举所有 Serial I/O 端口
+  - 每 5 秒自动发送测试数据
+  - 支持 1024x600 分辨率
+- **博客 05 已全面更新**
+  - 修正：GPIO 14/15 不工作，应用专用串口
+  - 添加：固件禁用 GPIO 串口的说明
+  - 更新：硬件连接图和常见问题
+
 ---
 
 ## 硬件使用经验
