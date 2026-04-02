@@ -1,13 +1,7 @@
-## @file
-#  SerialRecv - Serial Port Loopback Test
-#
-#  Copyright (c) 2026, airzam. All rights reserved.<BR>
-#
-
 [Defines]
   INF_VERSION                   = 0x00010006
   BASE_NAME                     = SerialRecv
-  FILE_GUID                     = b1c2d3e4-f5a6-4b7c-8d9e0f1a2b3c4
+  FILE_GUID                     = a912f198-7f1a-4813-b308-c75db806ec84
   MODULE_TYPE                   = UEFI_APPLICATION
   VERSION_STRING                = 0.1
   ENTRY_POINT                   = UefiMain

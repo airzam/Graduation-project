@@ -1,12 +1,12 @@
 ## @file
-#  Serial Package DSC
+#  Serial Communication Package DSC
 #
 #  Copyright (c) 2026, airzam. All rights reserved.<BR>
 #
 
 [Defines]
   PLATFORM_NAME                  = SerialPkg
-  PLATFORM_GUID                  = 6b8e2e1c-4a3d-5f6e-9b7a-0c1d2e3f4a5b
+  PLATFORM_GUID                  = 5a8f2e1b-3c4d-5e6f-7a8b-9c0d1e2f3a4b
   PLATFORM_VERSION               = 0.1
   DSC_SPECIFICATION              = 0x00010005
   OUTPUT_DIRECTORY               = Build/SerialPkg
