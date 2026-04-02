@@ -203,6 +203,18 @@ git remote add origin git@github.com:airzam/Graduation-project.git
   - 内容包括：程序入口、协议初始化、图形模式切换、Blt操作、GUI框架、事件循环
   - 包含协议汇总表、全局变量表、关键代码片段、文件依赖关系
 
+### 2026-04-02 再续（Linux AI）
+
+- **尝试网络启动方案（失败）**
+  - 分析 RPi5 UEFI 源码：NetworkPkg/PXE 已包含，但缺 Bcm57xxx 网卡驱动
+  - 结论：Boot Manager 里没有 PXE 选项，因为 UEFI 阶段网卡驱动缺失
+- **改用串口通信方案**
+  - 创建 `SerialPkg` 包（串口通信功能预留）
+  - 创建 `SerialRecv.c`（串口回环测试程序）
+  - **构建问题**：SerialPkg 构建在 "Processing meta-data" 阶段失败，原因待查
+  - 新增博客 `05-树莓派串口通信.md`
+  - 删除原 `05-树莓派网络启动配置.md`
+
 ---
 
 ## 硬件使用经验
@@ -220,13 +232,15 @@ git remote add origin git@github.com:airzam/Graduation-project.git
 │   ├── 01-*.md            # 博客文章
 │   ├── 02-*.md            # 博客文章
 │   ├── 03-*.md            # 博客文章
-│   └── 04-*.md            # 博客文章
+│   ├── 04-*.md            # 博客文章
+│   └── 05-*.md            # 博客文章
 ├── code-analysis/          # 代码分析文档
 │   └── 01-MyGuiFrame详解.md
-├── rpi5-uefi/              # UEFI 固件源码（完整纳入）
-├── rpi5-uefi-master.zip   # UEFI 源码压缩包（本地备份，不进 git）
+├── rpi5-uefi/              # UEFI 固件源码
+│   └── edk2/
+│       ├── MyAppPkg/       # 自己的应用包
+│       └── SerialPkg/      # 串口通信包（构建有问题，待修复）
 ├── RPi5_UEFI_Release_v0.3/ # 编译好的固件（本地）
-├── UEFI/                   # UEFI 相关代码
 └── *.docx / *.xlsx        # 论文文档
 ```
 
