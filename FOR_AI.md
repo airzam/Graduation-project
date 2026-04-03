@@ -279,12 +279,18 @@ git remote add origin git@github.com:airzam/Graduation-project.git
   - 阶段1：无 Secure Boot → 攻击成功（显示假数据）
   - 阶段2：启用 Secure Boot → 恶意版本被拦截（显示 Violation）
 - **保存计划文档**：`docs/PLAN-07-安全启动设计.md`
-- **待实现**：
-  - [ ] 修改 SECURE_BOOT_ENABLE = TRUE
-  - [ ] 创建 SerialRecvMalicious.c
-  - [ ] 实现 HostTools（GenKeys.py, SignTool.py）
-  - [ ] 完成博客 07
-  - [ ] 答辩演示
+
+**今日已完成**：
+- [x] 修改 SECURE_BOOT_ENABLE = TRUE（RPi5.dsc）
+- [x] 创建 SerialRecvMalicious.c + .inf
+- [x] 实现 HostTools（GenKeys.py, SignTool.py, README.md）
+- [x] 完成博客 07（完整版）
+- [ ] 答辩演示
+
+**待续**：
+- 编译 SerialRecvMalicious.efi
+- 配置 UEFI Setup（导入密钥）
+- 录制答辩演示视频
 
 ---
 
@@ -306,7 +312,7 @@ git remote add origin git@github.com:airzam/Graduation-project.git
 │   ├── 04-*.md            # 博客文章
 │   ├── 05-*.md            # 博客文章
 │   ├── 06-*.md            # 博客文章
-│   └── 07-*.md            # 博客文章（安全启动，TODO）
+│   └── 07-*.md            # 博客文章（安全启动，已完成）
 ├── docs/                    # 设计文档
 │   └── PLAN-07-安全启动设计.md  # 安全启动毕设计划
 ├── code-analysis/          # 代码分析文档
