@@ -30,7 +30,7 @@
   # Defines for default states.  These can be changed on the command line.
   # -D FLAG=VALUE
   #
-  DEFINE SECURE_BOOT_ENABLE      = FALSE
+  DEFINE SECURE_BOOT_ENABLE      = TRUE
   DEFINE INCLUDE_TFTP_COMMAND    = FALSE
   DEFINE DEBUG_PRINT_ERROR_LEVEL = 0x8000004F
 

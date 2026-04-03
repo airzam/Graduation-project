@@ -32,6 +32,7 @@
 
 [Components]
   SerialPkg/SerialRecv/SerialRecv.inf
+  SerialPkg/SerialRecvMalicious/SerialRecvMalicious.inf
 
 [BuildOptions]
   GCC:*_*_AARCH64_CC_FLAGS = -fno-builtin -fno-stack-protector
