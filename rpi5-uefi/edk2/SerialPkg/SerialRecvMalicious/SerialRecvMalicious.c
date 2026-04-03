@@ -94,11 +94,7 @@ EFI_GUID mSerialIoGuid = { 0xBB25CF6F, 0xF1D4, 0x11D2, { 0x9A, 0x0C, 0x00, 0x90,
 UINTN mScreenWidth = 1024;
 UINTN mScreenHeight = 600;
 
-// Red color for alert
-#define MALICIOUS_REDEFI_STATUS EFI_STATUS EFIAPI UefiMain(
-    IN EFI_HANDLE        ImageHandle,
-    IN EFI_SYSTEM_TABLE *SystemTable
-);
+// Find all handles with Serial I/O protocol
 
 // Find all handles with Serial I/O protocol
 UINTN FindAllSerialPorts(EFI_SERIAL_IO_PROTOCOL **ports, UINTN maxPorts)
@@ -170,14 +166,17 @@ VOID DisplayWarning(IN EFI_SYSTEM_TABLE *SystemTable)
     Status = gBS->LocateProtocol(&gEfiGraphicsOutputProtocolGuid, NULL, (VOID**)&Gop);
     if (Status == EFI_SUCCESS) {
         UINTN BufferSize = Gop->Mode->Info->HorizontalResolution *
-                          Gop->Mode->Info->VerticalResolution * sizeof(UINT32);
-        UINT32 *BltBuffer = NULL;
+                          Gop->Mode->Info->VerticalResolution * sizeof(EFI_GRAPHICS_OUTPUT_BLT_PIXEL);
+        EFI_GRAPHICS_OUTPUT_BLT_PIXEL *BltBuffer = NULL;
 
         Status = gBS->AllocatePool(EfiBootServicesData, BufferSize, (VOID**)&BltBuffer);
         if (Status == EFI_SUCCESS) {
-            // Red background
-            for (i = 0; i < BufferSize / sizeof(UINT32); i++) {
-                BltBuffer[i] = 0x00FF0000;  // Blue=0, Green=0, Red=255
+            // Red background (BGRA format)
+            for (i = 0; i < Gop->Mode->Info->HorizontalResolution * Gop->Mode->Info->VerticalResolution; i++) {
+                BltBuffer[i].Blue = 0;
+                BltBuffer[i].Green = 0;
+                BltBuffer[i].Red = 255;
+                BltBuffer[i].Reserved = 0;
             }
             Gop->Blt(Gop, BltBuffer, EfiBltVideoFill, 0, 0, 0, 0,
                     Gop->Mode->Info->HorizontalResolution,
@@ -189,18 +188,10 @@ VOID DisplayWarning(IN EFI_SYSTEM_TABLE *SystemTable)
     Print(L"\n");
     Print(L"================================================================================\n");
     Print(L"\n");
-    Print(L"     ██╗  ██╗ ██████╗ ██╗     ██╗      █████╗ ██╗  ██╗███████╗\n");
-    Print(L"     ██║  ██║██╔═══██╗██║     ██║     ██╔══██╗╚██╗██╔╝██╔════╝\n");
-    Print(L"     ███████║██║   ██║██║     ██║     ███████║ ╚███╔╝ █████╗\n");
-    Print(L"     ██╔══██║██║   ██║██║     ██║     ██╔══██║ ██╔██╗ ██╔══╝\n");
-    Print(L"     ██║  ██║╚██████╔╝███████╗███████╗██║  ██║██╔╝ ██╗███████╗\n");
-    Print(L"     ╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝\n");
+    Print(L"  !!!  ATTENTION: SYSTEM COMPROMISED!  !!!\n");
     Print(L"\n");
     Print(L"================================================================================\n");
     Print(L"\n");
-    Print(L"                        ATTENTION: SYSTEM COMPROMISED!\n");
-    Print(L"\n");
-    Print(L"--------------------------------------------------------------------------------\n");
     Print(L"  This EFI application has been REPLACED by a malicious version!\n");
     Print(L"\n");
     Print(L"  What happened?\n");
@@ -308,14 +299,8 @@ EFI_STATUS EFIAPI UefiMain(
                     serial->SetAttributes(serial, 115200, 0, 1000000, 0, 8, 0);
                     serial->Reset(serial);
 
-                    // Send fake telemetry header
-                    CHAR8 header[128];
-                    AsciiSPrint(
-                        header,
-                        sizeof(header),
-                        "\r\n=== FAKE DATA #%d ===\r\n",
-                        fakeCounter
-                    );
+                    // Send fake telemetry header (fixed string)
+                    CHAR8 header[] = "\r\n=== FAKE DATA ===\r\n";
                     UINTN len = AsciiStrLen(header);
                     UINTN sent = len;
                     serial->Write(serial, &sent, header);
