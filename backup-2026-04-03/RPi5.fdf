@@ -26,11 +26,11 @@
 
 [FD.RPI_EFI]
 BaseAddress   = 0x00000000|gArmTokenSpaceGuid.PcdFdBaseAddress
-Size          = 0x00c80000|gArmTokenSpaceGuid.PcdFdSize
+Size          = 0x00200000|gArmTokenSpaceGuid.PcdFdSize
 ErasePolarity = 1
 
 BlockSize     = 0x00001000|gRaspberryPiTokenSpaceGuid.PcdFirmwareBlockSize
-NumBlocks     = 0xC80
+NumBlocks     = 0x200
 
 ################################################################################
 #
@@ -57,22 +57,21 @@ FILE = $(TFA_BUILD_BL31)
 #
 # UEFI image
 #
-0x00020000|0x00c00000
+0x00020000|0x001c0000
 gArmTokenSpaceGuid.PcdFvBaseAddress|gArmTokenSpaceGuid.PcdFvSize
 FV = FVMAIN_COMPACT
 
 #
 # Variables (0x20000 overall).
 #
-# 0x00c20000 - 0x00c3ffff NV_VARIABLE_STORE (128KB)
-# 0x00c40000 - 0x00c40fff NV_EVENT_LOG (4KB)
-# 0x00c41000 - 0x00c41fff NV_FTW_WORKING_HEADER (4KB)
-# 0x00c42000 - 0x00c51fff NV_FTW_WORKING_DATA (64KB)
-# 0x00c52000 - 0x00c7ffff Reserved
+# 0x001e0000 - 0x001edfff EFI_FIRMWARE_VOLUME_HEADER
+# 0x001ee000 - 0x001eefff Event log
+# 0x001ef000 - 0x001effff EFI_FAULT_TOLERANT_WORKING_BLOCK_HEADER-
+# 0x001f0000 - 0x001fffff Data
 #
 
 # NV_VARIABLE_STORE
-0x00c20000|0x00020000
+0x001e0000|0x0000e000
 gRaspberryPiTokenSpaceGuid.PcdNvStorageVariableBase|gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageVariableSize
 
 DATA = {
@@ -115,11 +114,11 @@ DATA = {
 }
 
 # NV_EVENT_LOG
-0x00c40000|0x00001000
+0x001ee000|0x00001000
 gRaspberryPiTokenSpaceGuid.PcdNvStorageEventLogBase|gRaspberryPiTokenSpaceGuid.PcdNvStorageEventLogSize
 
 # NV_FTW_WORKING header
-0x00c41000|0x00001000
+0x001ef000|0x00001000
 gRaspberryPiTokenSpaceGuid.PcdNvStorageFtwWorkingBase|gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageFtwWorkingSize
 
 DATA = {
@@ -134,7 +133,7 @@ DATA = {
 }
 
 # NV_FTW_WORKING data
-0x00c42000|0x00010000
+0x001f0000|0x00010000
 gRaspberryPiTokenSpaceGuid.PcdNvStorageFtwSpareBase|gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageFtwSpareSize
 
 #
@@ -354,7 +353,6 @@ READ_LOCK_CAP      = TRUE
 READ_LOCK_STATUS   = TRUE
 
   INF ArmPlatformPkg/PrePi/PeiUniCore.inf
-  INF SecurityPkg/VariableAuthenticated/SecureBootConfigDxe/SecureBootConfigDxe.inf
   FILE FV_IMAGE = 9E21FD93-9C72-4c15-8C4B-E77F1DB2D792 {
     SECTION GUIDED EE4E5898-3914-4259-9D6E-DC7BD79403CF PROCESSING_REQUIRED = TRUE {
       SECTION FV_IMAGE = FVMAIN

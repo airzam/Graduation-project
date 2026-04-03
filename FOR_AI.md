@@ -290,6 +290,11 @@ git remote add origin git@github.com:airzam/Graduation-project.git
 - [x] 签名 SerialRecv.efi
 - [x] 修复 FDF 文件编译问题
 - [x] 重新编译带 Secure Boot 的固件
+- [x] **修复 SecureBootConfigDxe 未出现在固件中的问题**
+  - 直接在 FVMAIN_COMPACT 中添加 SecureBootConfigDxe.inf
+  - 增大 FD 大小到 12.5MB，FVMAIN_COMPACT 到 12MB
+  - 验证：RPI_EFI.fd 包含 SecureBootConfigDxe
+- [ ] SD 卡烧录新固件并测试 Secure Boot Configuration UI
 - [ ] 答辩演示
 
 ---
@@ -342,6 +347,38 @@ openssl req -new -x509 -key keys/SigningKey.pem -out keys/SigningKey.crt
 
 **修改的文件**：
 - `edk2-platforms/Platform/RaspberryPi/RPi5/RPi5.fdf`
+
+### 问题 5：SecureBootConfigDxe 未出现在最终固件中
+
+**问题分析**：
+- SecureBootConfigDxe 在 RPi5.dsc 中被条件编译，链接到 FVMAIN（11MB）
+- FVMAIN_COMPACT 使用 FV_IMAGE 格式包含 FVMAIN
+- 即便增大 FVMAIN_COMPACT 到 12MB，FVMAIN 仍然太大无法fit（只使用了 14%）
+- 根本原因：FV_IMAGE section 无法容纳 FVMAIN
+
+**最终解决方案**：
+1. 继续增大 FD 大小到 12.5MB（0x00c80000）
+2. 增大 FVMAIN_COMPACT 到 12MB（0x00c00000）
+3. **关键修复**：直接在 FVMAIN_COMPACT 中添加 SecureBootConfigDxe.inf：
+   ```fdf
+   INF ArmPlatformPkg/PrePi/PeiUniCore.inf
+   INF SecurityPkg/VariableAuthenticated/SecureBootConfigDxe/SecureBootConfigDxe.inf
+   FILE FV_IMAGE = 9E21FD93-9C72-4c15-8C4B-E77F1DB2D792 {
+   ```
+
+**验证结果**：
+```bash
+# RPI_EFI.fd: 12,918,784 bytes (12.3MB)
+strings RPI_EFI.fd | grep -i secureboot
+# 输出: SECUREBOOT_CONFIGURATION
+
+# GUID F0E6A44F-7195-41C3-AC64-54F202CD0A21 存在于固件中
+```
+
+**今日完成**：
+- [x] 修复 SecureBootConfigDxe 未出现在固件中的问题
+- [x] 重新编译固件，RPI_EFI.fd 包含 SecureBootConfigDxe
+- [ ] SD 卡烧录新固件并测试
 
 ---
 
