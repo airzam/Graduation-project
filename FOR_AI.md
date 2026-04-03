@@ -285,10 +285,67 @@ git remote add origin git@github.com:airzam/Graduation-project.git
 - [x] 创建 SerialRecvMalicious.c + .inf
 - [x] 实现 HostTools（GenKeys.py, SignTool.py, README.md）
 - [x] 完成博客 07（完整版）
+- [x] 编译 SerialRecvMalicious.efi
+- [x] 生成签名密钥（KEKKey.der, SigningKey.der）
+- [x] 签名 SerialRecv.efi
+- [x] 修复 FDF 文件编译问题
+- [x] 重新编译带 Secure Boot 的固件
 - [ ] 答辩演示
 
+---
+
+## 遇到的问题与解决方案
+
+### 问题 1：SerialRecvMalicious.c 编译错误
+
+**错误**：
+1. `error: expected '=', ',', ';', 'asm' or '__attribute__' before '*' token` - 错误的宏定义
+2. `error: passing argument 2 of 'Gop->Blt' from incompatible pointer type` - UINT32* vs EFI_GRAPHICS_OUTPUT_BLT_PIXEL*
+3. `error: implicit declaration of function 'AsciiSPrint'` - 未声明函数
+
+**解决方案**：
+1. 删除错误的宏定义（#define MALICIOUS_REDEFI_STATUS...）
+2. 修正 BltBuffer 类型：UINT32* → EFI_GRAPHICS_OUTPUT_BLT_PIXEL*
+3. 使用固定字符串替代 AsciiSPrint
+
+### 问题 2：SignTool.py 语法错误
+
+**错误**：`IndentationError: unindent does not match any outer indentation level`
+
+**解决方案**：修正缩进（` EFI_GUID_SECURITY_DATABASE` → `EFI_GUID_SECURITY_DATABASE`）
+
+### 问题 3：sbsign 无法加载证书
+
+**错误**：`Can't read certificate from file 'keys/SigningKey.pub'`
+
+**原因**：GenKeys.py 生成的 .pub 文件是 PEM 格式的公钥，但不是 X.509 证书格式
+
+**解决方案**：用 OpenSSL 从私钥生成自签名证书：
+```bash
+openssl req -new -x509 -key keys/SigningKey.pem -out keys/SigningKey.crt
+```
+
+### 问题 4：RPi5 固件编译 FV 大小不足
+
+**错误**：`GenFv: ERROR 3000: Invalid - the required fv image size 0x1bc1e8 exceeds the set fv image size 0x1b0000`
+
+**原因**：启用 Secure Boot 后固件变大（增加约 48KB），原 FVMAIN_COMPACT 大小 0x1b0000 不够
+
+**解决方案**：
+1. 修改 `RPi5.fdf`：FVMAIN_COMPACT 大小从 0x001b0000 → 0x001c0000
+2. 调整变量存储区域偏移：
+   - NV_VARIABLE_STORE: 0x001d0000 → 0x001e0000
+   - NV_EVENT_LOG: 0x001de000 → 0x001ee000
+   - NV_FTW_WORKING: 0x001df000 → 0x001ef000
+   - NV_FTW_WORKING data: 0x001e0000 → 0x001f0000
+3. 增加 FD 总大小：0x001f0000 → 0x00200000
+
+**修改的文件**：
+- `edk2-platforms/Platform/RaspberryPi/RPi5/RPi5.fdf`
+
+---
+
 **待续**：
-- 编译 SerialRecvMalicious.efi
 - 配置 UEFI Setup（导入密钥）
 - 录制答辩演示视频
 

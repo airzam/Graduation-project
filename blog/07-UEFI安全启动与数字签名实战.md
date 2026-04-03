@@ -481,11 +481,41 @@ DEFINE SECURE_BOOT_ENABLE      = TRUE
 
 **步骤2**：重新编译固件
 
+> **注意**：启用 Secure Boot 后固件会变大（约增加 48KB），需要修改 FDF 文件调整分区大小。
+
+**2.1 修改 FDF 文件**（如遇到编译错误 `FV image size exceeds`）
+
+文件：`edk2-platforms/Platform/RaspberryPi/RPi5/RPi5.fdf`
+
+需要修改的内容：
+
+```makefile
+# FD 大小调整（0x001f0000 → 0x00200000）
+Size          = 0x00200000|gArmTokenSpaceGuid.PcdFdSize
+NumBlocks     = 0x200
+
+# FV 大小调整（0x001b0000 → 0x001c0000）
+0x00020000|0x001c0000
+gArmTokenSpaceGuid.PcdFvBaseAddress|gArmTokenSpaceGuid.PcdFvSize
+FV = FVMAIN_COMPACT
+
+# 变量存储区偏移调整
+# NV_VARIABLE_STORE: 0x001d0000 → 0x001e0000
+# NV_EVENT_LOG: 0x001de000 → 0x001ee000
+# NV_FTW_WORKING: 0x001df000 → 0x001ef000
+# NV_FTW_WORKING data: 0x001e0000 → 0x001f0000
+```
+
+**2.2 编译固件**
+
 ```bash
-cd ~/Graduation-project/rpi5-uefi/edk2-platforms
-build -a AARCH64 -t GCC5 -b DEBUG \
-      -D SECURE_BOOT_ENABLE=TRUE \
-      -p Platform/RaspberryPi/RPi5/RPi5.dsc
+cd ~/Graduation-project/rpi5-uefi
+./build.sh --debug 1
+```
+
+编译成功后，固件位于：
+```
+rpi5-uefi/RPI_EFI.fd  (2MB，带 Secure Boot 支持)
 ```
 
 **步骤3**：烧录 SD 卡

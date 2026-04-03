@@ -13,3 +13,7 @@ Thumbs.db
 *.pdf
 rpi5-uefi-master.zip
 UEFI编程实践_.pdf
+
+# 私钥文件 - 绝不能提交到 git！
+*.pem
+!*.pem.example
